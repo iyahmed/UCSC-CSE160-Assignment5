@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "three": "^0.163.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1",
+    "lil-gui": "^0.19.2",
+    "vite": "^5.2.9"
+  },
+  "scripts": {
+    "predeploy": "npx vite build",
+    "deploy": "gh-pages -d dist"
+  }
+}
