@@ -1,5 +1,5 @@
 // vite.config.js
 export default {
     // config options
-    base: "/CSE160-Assignment5/"
+    base: "/UCSC-CSE160-Assignment5/"
 };
