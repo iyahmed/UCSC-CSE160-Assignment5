@@ -56,8 +56,8 @@ function main() {
     });
     const mesh = new THREE.Mesh(planeGeo, planeMat);
     mesh.rotation.x = Math.PI * -0.5;
-    // Creating the texture for the cube
     const textureLoader = new THREE.TextureLoader();
+    // Creating the texture for the cube
     const cubeTexture = textureLoader.load('falcon.jpeg'); // The texture is "Falcon Perched On Tree" on Pexels by Frans Van Heerden
     cubeTexture.colorSpace = THREE.SRGBColorSpace;
 
@@ -232,6 +232,16 @@ function main() {
             tetrahedron.rotation.x = rot;
             tetrahedron.rotation.y = rot;
         });
+
+        // Creating the texture for the skybox/background with the "Pink Sunrise" Cubemap By Greg Zaal And Rico Cilliers Of Poly Haven
+        const loader = new THREE.TextureLoader();
+        const bgTexture = loader.load('cubemap.png', () => {
+            bgTexture.mapping = THREE.EquirectangularReflectionMapping;
+            bgTexture.colorSpace = THREE.SRGBColorSpace;
+            scene.background = bgTexture;
+        });
+        bgTexture.colorspace = THREE.SRGBColorSpace;
+
         renderer.render(scene, camera);
         requestAnimationFrame(render);
     }
