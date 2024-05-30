@@ -4,7 +4,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
-// TODO: Finish making vehicle and then start making the houses near the road
+// TODO: Finish making the vehicle and then start making the houses near the road
 // TODO: Add the ability to set the position of the car OBJ
 // TODO: Add animation for both the car and the other vheicle to chase each other
 
@@ -65,7 +65,7 @@ function main() {
 
 
     // Creating the gray checkerboard ground plane
-    const planeSize = 55; // Originally 40
+    const planeSize = 45; // Originally 40
     const loader = new THREE.TextureLoader();
     const texture = loader.load('checker.png');
     texture.wrapS = THREE.RepeatWrapping;
@@ -82,9 +82,12 @@ function main() {
     const mesh = new THREE.Mesh(planeGeo, planeMat);
     mesh.rotation.x = Math.PI * -0.5;
     const textureLoader = new THREE.TextureLoader();
-    // Creating the texture for the cube
-    const cubeTexture = textureLoader.load('road.jpg'); // The texture is Untitled on Pexels by "Life of Pix"
-    cubeTexture.colorSpace = THREE.SRGBColorSpace;
+    // Creating the texture for the road cubes
+    const roadTexture = textureLoader.load('road.jpg'); // The texture is Untitled on Pexels by "Life of Pix"
+    roadTexture.colorSpace = THREE.SRGBColorSpace;
+    // Creating the texture for the grass cubes
+    const grassTexture = textureLoader.load('grass.jpeg'); // The texture is "Green Grass" on Pexels by "Mike Fallarme"
+    grassTexture.colorSpace = THREE.SRGBColorSpace;
 
 
     // Adding directional lighting to the scene
@@ -226,7 +229,7 @@ function main() {
     }
     function makeCubeInstance(cubeGeometry, x, y, z, color) { // Internal function to create cubes
         const material = new THREE.MeshPhongMaterial({ color }); // Coloring the cube which is affected by lights
-        // const material = new THREE.MeshBasicMaterial({ map: cubeTexture }); // Coloring the cube which is affected by lights
+        // const material = new THREE.MeshBasicMaterial({ map: roadTexture }); // Coloring the cube which is affected by lights
         const cube = new THREE.Mesh(cubeGeometry, material); // Creating the mesh for the cube
         scene.add(cube);
         cube.position.x = x;
@@ -298,19 +301,53 @@ function main() {
 
     // Creating the road through road cubes
     const roadCubes = [
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -25.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -20.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -15.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -10.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -5.00001, cubeTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -25.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -20.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -15.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -10.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, -5.00001, roadTexture),
         // Center of the road
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 0.00001, cubeTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 0.00001, roadTexture),
         // Positive z-side of the road
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 5.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 10.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 15.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 20.00001, cubeTexture),
-        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 25.00001, cubeTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 5.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 10.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 15.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 20.00001, roadTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 25.00001, roadTexture),
+    ];
+    
+    // Creating the grass on the right side through road cubes
+    const grassCubesOne = [
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -25.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -20.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -15.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -10.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -5.00001, grassTexture),
+        // Center of the road
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 0.00001, grassTexture),
+        // Positive z-side of the road
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 5.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 10.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 15.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 20.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 25.00001, grassTexture),
+    ];
+    
+    // Creating the grass on the two side through road cubes
+    const grassCubesTwo = [
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -25.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -20.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -15.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -10.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -5.00001, grassTexture),
+        // Center of the road
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, 0.00001, grassTexture),
+        // Positive z-side of the road
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, 5.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, 10.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, 15.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, 20.00001, grassTexture),
+        makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, 25.00001, grassTexture),
     ];
 
     // Creating the black tires for the vehicle through sphere cubes
@@ -325,7 +362,7 @@ function main() {
 
 //    // Creating one textured spinning cube slightly left of the origin
 //    const cubes = [
-//        makeCubeInstance(cubeGeometry, -5, cubeTexture),
+//        makeCubeInstance(cubeGeometry, -5, roadTexture),
 //    ];
     // Creating a large Sun
     const spheres = [
@@ -365,6 +402,22 @@ function main() {
         }
 
         roadCubes.forEach((cubes, ndx) => {
+            cubes.forEach((cube) => {
+                const speed = 1 + ndx * .1;
+                const rot = time * speed;
+//              cube.rotation.x = rot;
+//              cube.rotation.y = rot;
+            });
+        });
+        grassCubesOne.forEach((cubes, ndx) => {
+            cubes.forEach((cube) => {
+                const speed = 1 + ndx * .1;
+                const rot = time * speed;
+//              cube.rotation.x = rot;
+//              cube.rotation.y = rot;
+            });
+        });
+        grassCubesTwo.forEach((cubes, ndx) => {
             cubes.forEach((cube) => {
                 const speed = 1 + ndx * .1;
                 const rot = time * speed;
