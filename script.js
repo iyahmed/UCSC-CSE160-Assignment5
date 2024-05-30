@@ -4,9 +4,15 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
-// TODO: Finish making the vehicle and then start making the houses near the road
-// TODO: Add the ability to set the position of the car OBJ
-// TODO: Add animation for both the car and the other vheicle to chase each other
+// TODO: Improve the vehicle's textures
+// TODO: Make houses on the side of the road (using a house instance function)
+// TODO: Texture the Sun
+// TODO: Make the directional light come from the Sun's direction by default
+// TODO: Add an animation moving both the car and the vehicle forward by different paces, only stopping at the end of the road, to simulate a chase
+// TODO: Add a stoplight OBJ, with it being red at all times, and position at the end of the road
+// TODO: Add trees to side of the road, placed on top of the grasses
+// TODO: Improve the skybox, making sure it shows something at all directions
+// TODO: Cleanup the code and split logic into different functions and files
 
 // Color editor class using lil-gui
 class ColorGUIHelper {
@@ -88,6 +94,12 @@ function main() {
     // Creating the texture for the grass cubes
     const grassTexture = textureLoader.load('grass.jpeg'); // The texture is "Green Grass" on Pexels by "Mike Fallarme"
     grassTexture.colorSpace = THREE.SRGBColorSpace;
+    // Creating the texture for the vehicle body cube
+    const vehicleBodyTexture = textureLoader.load('coca-cola-truck-container.jpeg'); // The texture is a modified version of "a coca-cola truck on the street" on Unsplash by "AXP Photography"
+    vehicleBodyTexture.colorSpace = THREE.SRGBColorSpace;
+    // Creating the texture for the vehicle body cylinder
+    const vehicleCylinderTexture = textureLoader.load('coca-cola-can.jpg'); // The texture is a modified version of "Red Can of Coca-Cola Zero on the Corner of a Table" on Pexels by "Rohit Sharma"
+    vehicleCylinderTexture.colorSpace = THREE.SRGBColorSpace;
 
 
     // Adding directional lighting to the scene
@@ -195,7 +207,7 @@ function main() {
     // Setting the vehicle sphere's vlaues
     const cylinderRadiusTop = 1;
     const cylinderRadiusBottom = 1;
-    const cylinderHeight = 2;
+    const cylinderHeight = 5;
     const cylinderRadialSegments = 32;
     const cylinderGeometry = new THREE.CylinderGeometry(cylinderRadiusTop, cylinderRadiusBottom, cylinderHeight, cylinderRadialSegments);
 
@@ -227,9 +239,9 @@ function main() {
         return cubes;
         // return [cubeOne, cubeTwo, cubeThree];
     }
-    function makeCubeInstance(cubeGeometry, x, y, z, color) { // Internal function to create cubes
-        const material = new THREE.MeshPhongMaterial({ color }); // Coloring the cube which is affected by lights
-        // const material = new THREE.MeshBasicMaterial({ map: roadTexture }); // Coloring the cube which is affected by lights
+    function makeCubeInstance(cubeGeometry, x, y, z, givenTexture) { // Internal function to create cubes
+        // const material = new THREE.MeshPhongMaterial({ color }); // Coloring the cube which is affected by lights
+        const material = new THREE.MeshBasicMaterial({ map: givenTexture }); // Texturing the cube which is not affected by lights
         const cube = new THREE.Mesh(cubeGeometry, material); // Creating the mesh for the cube
         scene.add(cube);
         cube.position.x = x;
@@ -289,8 +301,8 @@ function main() {
 //        tetrahedron.position.y = tetrahedron.position.y + 5;
 //        return tetrahedron;
 //    }
-    function makeCylinderInstance(cylinderGeometry, color, x, y, z) { // Internal function to create cylinders
-        const material = new THREE.MeshPhongMaterial({ color }); // Coloring the cylinder which is affected by lights
+    function makeCylinderInstance(cylinderGeometry, givenTexture, x, y, z) { // Internal function to create cylinders
+        const material = new THREE.MeshBasicMaterial({ map: givenTexture }); // Texturing the cylinder which is not affected by lights
         const cylinder = new THREE.Mesh(cylinderGeometry, material); // Creating the mesh for the cylinder
         scene.add(cylinder);
         cylinder.position.x = x;
@@ -316,7 +328,7 @@ function main() {
         makeRoadCubeInstance(roadCubeGeometry, 0.00001, -0.05, 25.00001, roadTexture),
     ];
     
-    // Creating the grass on the right side through road cubes
+    // Creating the grass on both sides of the road through road cubes
     const grassCubesOne = [
         makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -25.00001, grassTexture),
         makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, -20.00001, grassTexture),
@@ -332,8 +344,6 @@ function main() {
         makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 20.00001, grassTexture),
         makeRoadCubeInstance(roadCubeGeometry, 15.00001, -0.05, 25.00001, grassTexture),
     ];
-    
-    // Creating the grass on the two side through road cubes
     const grassCubesTwo = [
         makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -25.00001, grassTexture),
         makeRoadCubeInstance(roadCubeGeometry, -15.00001, -0.05, -20.00001, grassTexture),
@@ -357,7 +367,7 @@ function main() {
 
     // Creating the blue body of the vehicle though a normal cube
     const cubes = [
-        makeCubeInstance(cubeGeometry, 0, 2, -15, 0x0000FF),
+        makeCubeInstance(cubeGeometry, 0, 2, -15, vehicleBodyTexture),
     ];
 
 //    // Creating one textured spinning cube slightly left of the origin
@@ -373,9 +383,9 @@ function main() {
 //        makeTetrahedronInstance(tetrahedronRadius, tetrahedronDetail, 0xFF0000, 5),
 //    ];
 
-    // Creating one green cylinder on top of the vehicle
+    // Creating one textured cylinder on top of the vehicle
     const vehicleCylinder = [
-        makeCylinderInstance(cylinderGeometry, 0x00FF00, 0, 4, -10),
+        makeCylinderInstance(cylinderGeometry, vehicleCylinderTexture, 0, 4, -10),
     ];
 
 
