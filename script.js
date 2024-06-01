@@ -4,6 +4,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
+// TODO: Add a better tree
 // TODO: Add an animation moving both the car and the vehicle forward by different paces, only stopping at the end of the road, to simulate a chase
 // TODO: Improve the skybox, making sure it shows something at all directions
 // TODO: Cleanup the code and split logic into different functions and files
@@ -303,24 +304,24 @@ function main() {
     }
     
     // Adding a OBJ file of "Tree Oak V10" by tomaszcgb on free3D.com to the scene
-    { // The tree will be located on the left side of the road
-        const mtlLoader = new MTLLoader();
-        const objLoader = new OBJLoader();
-        mtlLoader.load('Tree_V10_Final.mtl', (mtl) => {
-            mtl.preload();
-            for (const material of Object.values(mtl.materials)) {
-                material.side = THREE.DoubleSide;
-            }
-            objLoader.setMaterials(mtl);
+//    { // The tree will be located on the left side of the road
+//        const mtlLoader = new MTLLoader();
+//        const objLoader = new OBJLoader();
+//        mtlLoader.load('Tree_V10_Final.mtl', (mtl) => {
+//            mtl.preload();
+//            for (const material of Object.values(mtl.materials)) {
+//                material.side = THREE.DoubleSide;
+//            }
+//            objLoader.setMaterials(mtl);
             
-            objLoader.load('Tree_V10_Final.obj', (root) => {
-                root.position.y = 0.25;
-                root.position.x = -16;
-                root.castShadow = true;
-                scene.add(root);
-            });
-        });
-    }
+//            objLoader.load('Tree_V10_Final.obj', (root) => {
+//                root.position.y = 0.25;
+//                root.position.x = -16;
+//                root.castShadow = true;
+//                scene.add(root);
+//            });
+//        });
+//    }
     
     // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
     { // The table and shares will be located on the right side of the road
