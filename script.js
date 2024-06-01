@@ -4,15 +4,14 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
-// TODO: Improve the vehicle's textures
-// TODO: Make houses on the side of the road (using a house instance function)
-// TODO: Texture the Sun
-// TODO: Make the directional light come from the Sun's direction by default
 // TODO: Add an animation moving both the car and the vehicle forward by different paces, only stopping at the end of the road, to simulate a chase
-// TODO: Add a stoplight OBJ, with it being red at all times, and position at the end of the road
-// TODO: Add trees to side of the road, placed on top of the grasses
 // TODO: Improve the skybox, making sure it shows something at all directions
 // TODO: Cleanup the code and split logic into different functions and files
+// TODO: Add shadows to the scene
+// TODO: Turn the scene to an AR scene
+// TODO: Play sounds
+// TODO: Improve textures where needed
+// TODO: Make sure everything looks good, with no visible glitches
 
 // Color editor class using lil-gui
 class ColorGUIHelper {
@@ -56,6 +55,8 @@ function main() {
     // Creating the canvas and the renderer
     const canvas = document.querySelector('#c');
     const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 
     // Creating the camera to start to point to the origin
@@ -87,6 +88,7 @@ function main() {
     });
     const mesh = new THREE.Mesh(planeGeo, planeMat);
     mesh.rotation.x = Math.PI * -0.5;
+    mesh.receiveShadow = true;
     const textureLoader = new THREE.TextureLoader();
     // Creating the texture for the road cubes
     const roadTexture = textureLoader.load('road.jpg'); // The texture is Untitled on Pexels by "Life of Pix"
@@ -106,9 +108,10 @@ function main() {
     const directionalLightColor = 0xFFCC33; // Sunglow at sunset color
     const directionalLightIntensity = 1;
     const directionalLight = new THREE.DirectionalLight(directionalLightColor, directionalLightIntensity);
-    directionalLight.position.set(0, 10, 0); // Setting the default position of the light
+    directionalLight.position.set(-30, 15, -30); // Setting the default position of the light to match the Sun's location
     // Adding the directional light's helper to the scene for debugging purposes
 //    const helper = new THREE.DirectionalLightHelper(directionalLight);
+    directionalLight.castShadow = true;
     // Adding a mild ambient light to the scene
     const ambientLightColor = 0xFFFFFF; // White color
     const ambientLightIntensity = 0.1;
@@ -118,6 +121,7 @@ function main() {
     const hemisphereGroundColor = 0xB97A20; // Ground brown orange
     const hemisphereIntensity = 1;
     const hemisphereLight = new THREE.HemisphereLight(hemisphereSkyColor, hemisphereGroundColor, hemisphereIntensity);
+    hemisphereLight.castShadow = true;
     // Adding a light GUI so the user can manipulate the lights
     function makeXYZGUI(gui, vector3, name, onChangeFn) { // Internal function to make generic light GUIs
         const folder = gui.addFolder(name);
@@ -166,10 +170,179 @@ function main() {
 
             objLoader.load('SportsCar.obj', (root) => {
                 root.position.y = 0.25;
+                root.castShadow = true;
                 scene.add(root);
             });
         });
     }
+    
+    // Adding a OBJ file of "Bambo House" by tomaszcgb on free3D.com to the scene
+    { // The first house will be located in the top-left corner
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Bambo_House.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('Bambo_House.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -21.5;
+                root.position.z = -13;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Bambo House" by tomaszcgb on free3D.com to the scene
+    { // The second house will be located in the top-right corner
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Bambo_House.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('Bambo_House.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 9;
+                root.position.z = -13;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Bambo House" by tomaszcgb on free3D.com to the scene
+    { // The third house will be located in the bottom-left corner
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Bambo_House.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('Bambo_House.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -21.5;
+                root.position.z = 25;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Bambo House" by tomaszcgb on free3D.com to the scene
+    { // The fourth house will be located in the bottom-right corner
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Bambo_House.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('Bambo_House.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 9;
+                root.position.z = 25;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Traffic Light" by bazsa on free3D.com to the scene
+    { // The first stoplight will be located in the top-left corner of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('trafficlight.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('trafficlight.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -8;
+                root.position.z = -26.5;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Traffic Light" by bazsa on free3D.com to the scene
+    { // The second stoplight will be located in the bottom-left corner of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('trafficlight.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('trafficlight.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -8;
+                root.position.z = 26.5;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Tree Oak V10" by tomaszcgb on free3D.com to the scene
+    { // The tree will be located on the left side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Tree_V10_Final.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+            
+            objLoader.load('Tree_V10_Final.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -16;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
+    { // The table and shares will be located on the right side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Table And Chairs.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+            
+            objLoader.load('Table And Chairs.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 16;
+                root.scale.set(0.05, 0.05, 0.05);
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+
 
 
     // Creating the scene with the textures, lights, and OBJ loader before the generated primary shapes
@@ -217,6 +390,7 @@ function main() {
         const cubes = []; // The return array
         // Cube One, the center cube
         const cubeOne = new THREE.Mesh(cubeGeometry, material); // Creating the mesh for the cube
+        cubeOne.receiveShadow = true;
         scene.add(cubeOne);
         cubeOne.position.x = x;
         cubeOne.position.y = y;
@@ -224,6 +398,7 @@ function main() {
         cubes.push(cubeOne);
         // Cube Two, the left cube
         const cubeTwo = new THREE.Mesh(cubeGeometry, material); // Creating the mesh for the cube
+        cubeTwo.receiveShadow = true;
         scene.add(cubeTwo);
         cubeTwo.position.x = x - 5;
         cubeTwo.position.y = y;
@@ -231,6 +406,7 @@ function main() {
         cubes.push(cubeTwo);
         // Cube Three, the right cube
         const cubeThree = new THREE.Mesh(cubeGeometry, material); // Creating the mesh for the cube
+        cubeThree.receiveShadow = true;
         scene.add(cubeThree);
         cubeThree.position.x = x + 5;
         cubeThree.position.y = y;
@@ -243,6 +419,7 @@ function main() {
         // const material = new THREE.MeshPhongMaterial({ color }); // Coloring the cube which is affected by lights
         const material = new THREE.MeshBasicMaterial({ map: givenTexture }); // Texturing the cube which is not affected by lights
         const cube = new THREE.Mesh(cubeGeometry, material); // Creating the mesh for the cube
+        cube.castShadow = true;
         scene.add(cube);
         cube.position.x = x;
         cube.position.y = y;
@@ -254,6 +431,7 @@ function main() {
         const spheres = []; // The return array
         // Sphere One at the top-left
         const sphereOne = new THREE.Mesh(sphereGeometry, material); // Creating the mesh for the sphere
+        sphereOne.castShadow = true;
         scene.add(sphereOne);
         sphereOne.position.x = x - 2.5;
         sphereOne.position.y = y;
@@ -261,6 +439,7 @@ function main() {
         spheres.push(sphereOne);
         // Sphere Two at the top-right
         const sphereTwo = new THREE.Mesh(sphereGeometry, material); // Creating the mesh for the sphere
+        sphereTwo.castShadow = true;
         scene.add(sphereTwo);
         sphereTwo.position.x = x + 2.5;
         sphereTwo.position.y = y;
@@ -268,6 +447,7 @@ function main() {
         spheres.push(sphereTwo);
         // Sphere Three at the back-left
         const sphereThree = new THREE.Mesh(sphereGeometry, material); // Creating the mesh for the sphere
+        sphereThree.castShadow = true;
         scene.add(sphereThree);
         sphereThree.position.x = x - 2.5;
         sphereThree.position.y = y;
@@ -275,6 +455,7 @@ function main() {
         spheres.push(sphereThree);
         // Sphere Four at the back-right
         const sphereFour = new THREE.Mesh(sphereGeometry, material); // Creating the mesh for the sphere
+        sphereFour.castShadow = true;
         scene.add(sphereFour);
         sphereFour.position.x = x + 2.5;
         sphereFour.position.y = y;
@@ -285,6 +466,7 @@ function main() {
     function makeSphereInstance(sphereGeometry, color, x, y, z) { // Internal function to create spheres
         const material = new THREE.MeshPhongMaterial({ color }); // Coloring the sphere which is affected by lights
         const sphere = new THREE.Mesh(sphereGeometry, material); // Creating the mesh for the sphere
+        sphere.castShadow = true;
         scene.add(sphere);
         sphere.position.x = x;
         sphere.position.y = y;
@@ -296,6 +478,7 @@ function main() {
 
 //        const material = new THREE.MeshBasicMaterial({ color }); // Coloring the tetrahedron which is not affected by lights because it does not have smooth vertex normals
 //        const tetrahedron = new THREE.Mesh(tetrahedronGeometry, material); // Creating the mesh for the tetrahedron
+//        tetrahedron.castShadow = true;
 //        scene.add(tetrahedron);
 //        tetrahedron.position.x = x;
 //        tetrahedron.position.y = tetrahedron.position.y + 5;
@@ -304,6 +487,7 @@ function main() {
     function makeCylinderInstance(cylinderGeometry, givenTexture, x, y, z) { // Internal function to create cylinders
         const material = new THREE.MeshBasicMaterial({ map: givenTexture }); // Texturing the cylinder which is not affected by lights
         const cylinder = new THREE.Mesh(cylinderGeometry, material); // Creating the mesh for the cylinder
+        cylinder.castShadow = true;
         scene.add(cylinder);
         cylinder.position.x = x;
         cylinder.position.y = y;
@@ -376,7 +560,7 @@ function main() {
 //    ];
     // Creating a large Sun
     const spheres = [
-        makeSphereInstance(sphereGeometry, 0xFFFF00, -30, 15, -30),
+        makeSphereInstance(sphereGeometry, 0xF9D71C, -30, 15, -30), // Using the Krylon Sun Yellow color
     ];
     // Creating one spinning red tetrahedron slightly right of the origin
 //    const tetrahedrons = [
