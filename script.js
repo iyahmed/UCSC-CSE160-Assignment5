@@ -4,13 +4,15 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
-// TODO: Add an animation moving both the car and the vehicle forward by different paces, only stopping at the end of the road, to simulate a chase
 // TODO: Cleanup the code and split logic into different functions and files
 // TODO: Add shadows to the scene
 // TODO: Turn the scene to an AR scene
 // TODO: Play sounds
+// TODO: Possible get car animation working (optional)
 // TODO: Improve textures where needed
 // TODO: Make sure everything looks good, with no visible glitches
+// TODO: Optimize the scene to render fast and be responsive to changes
+// TODO: Add a Grader's Note explaining every little detail
 
 // Color editor class using lil-gui
 class ColorGUIHelper {
@@ -62,7 +64,7 @@ function main() {
     const fov = 45;
     const aspect = 2;
     const near = 0.1;
-    const far = 100;
+    const far = 200;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     camera.position.set(0, 10, 20);
     const controls = new OrbitControls(camera, canvas);
@@ -156,6 +158,7 @@ function main() {
 
 
     // Adding a OBJ file of "Sports Car" by Quaternius on Poly.Pizza to the scene
+    // The first car is in the middle of the scene
     {
         const mtlLoader = new MTLLoader();
         const objLoader = new OBJLoader();
@@ -173,8 +176,31 @@ function main() {
             });
         });
     }
+    
+    // Adding a OBJ file of "Sports Car" by Quaternius on Poly.Pizza to the scene
+    // The first car is in the top-right of the scene
+    {
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('SportsCar.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('SportsCar.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 6;
+                root.position.z = 16;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
 
     // Adding an OBJ file of "Mitsubishi L200" by Muhammad Reyhan [CC-BY] via Poly Pizza
+    // The first pickup truck is in the middle-right of the scene
     {
         const mtlLoader = new MTLLoader();
         const objLoader = new OBJLoader();
@@ -188,6 +214,29 @@ function main() {
             objLoader.load('l200.obj', (root) => {
                 root.position.y = 0.25;
                 root.position.x = 6;
+                root.scale.set(2, 2, 2);
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding an OBJ file of "Mitsubishi L200" by Muhammad Reyhan [CC-BY] via Poly Pizza
+    // The second pickup truck is in the top-left of the scene
+    {
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('l200.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('l200.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -4;
+                root.position.z = 22;
                 root.scale.set(2, 2, 2);
                 root.castShadow = true;
                 scene.add(root);
@@ -322,7 +371,7 @@ function main() {
     }
     
     // Adding a OBJ file of "Tree02" by rezashams313 on free3D.com to the scene
-    { // The tree will be located on the left side of the road
+    { // The first tree will be located on the left side of the road
         const mtlLoader = new MTLLoader();
         const objLoader = new OBJLoader();
         mtlLoader.load('Tree.mtl', (mtl) => {
@@ -335,6 +384,26 @@ function main() {
             objLoader.load('Tree.obj', (root) => {
                 root.position.y = 0.25;
                 root.position.x = -16;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Tree02" by rezashams313 on free3D.com to the scene
+    { // The second tree will be located on the right side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Tree.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+            
+            objLoader.load('Tree.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 16;
                 root.castShadow = true;
                 scene.add(root);
             });
@@ -364,7 +433,29 @@ function main() {
     }
     
     // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
-    { // The second table and chair will be located on the bottom-right side of the road
+    { // The second table and chair will be located on the top-left side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Table And Chairs.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+            
+            objLoader.load('Table And Chairs.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -16;
+                root.position.z = -8;
+                root.scale.set(0.03, 0.03, 0.03);
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+
+    // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
+    { // The third table and chair will be located on the bottom-right side of the road
         const mtlLoader = new MTLLoader();
         const objLoader = new OBJLoader();
         mtlLoader.load('Table And Chairs.mtl', (mtl) => {
@@ -384,8 +475,28 @@ function main() {
             });
         });
     }
-
-
+    
+    // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
+    { // The fourth table and chair will be located on the bottom-left side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Table And Chairs.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+            
+            objLoader.load('Table And Chairs.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -16;
+                root.position.z = 8;
+                root.scale.set(0.03, 0.03, 0.03);
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
 
     // Creating the scene with the textures, lights, and OBJ loader before the generated primary shapes
     const scene = new THREE.Scene();
@@ -588,12 +699,12 @@ function main() {
 
     // Creating the black tires for the vehicle through sphere cubes
     const vehicleSpheres = [
-        makeVehicleSphereInstance(vehicleSphereGeometry, 0x000000, 0, 1, -15),
+        makeVehicleSphereInstance(vehicleSphereGeometry, 0x000000, 0, 0.75, -15),
     ];
 
-    // Creating the blue body of the vehicle though a normal cube
+    // Creating the textured body of the vehicle though a normal cube
     const cubes = [
-        makeCubeInstance(cubeGeometry, 0, 2, -15, vehicleBodyTexture),
+        makeCubeInstance(cubeGeometry, 0, 3, -15, vehicleBodyTexture),
     ];
 
 //    // Creating one textured spinning cube slightly left of the origin
@@ -611,7 +722,7 @@ function main() {
 
     // Creating one textured cylinder on top of the vehicle
     const vehicleCylinder = [
-        makeCylinderInstance(cylinderGeometry, vehicleCylinderTexture, 0, 4, -10),
+        makeCylinderInstance(cylinderGeometry, vehicleCylinderTexture, 0, 5, -10),
     ];
 
 
