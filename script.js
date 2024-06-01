@@ -4,9 +4,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
-// TODO: Add a better tree
 // TODO: Add an animation moving both the car and the vehicle forward by different paces, only stopping at the end of the road, to simulate a chase
-// TODO: Improve the skybox, making sure it shows something at all directions
 // TODO: Cleanup the code and split logic into different functions and files
 // TODO: Add shadows to the scene
 // TODO: Turn the scene to an AR scene
@@ -122,7 +120,6 @@ function main() {
     const hemisphereGroundColor = 0xB97A20; // Ground brown orange
     const hemisphereIntensity = 1;
     const hemisphereLight = new THREE.HemisphereLight(hemisphereSkyColor, hemisphereGroundColor, hemisphereIntensity);
-    hemisphereLight.castShadow = true;
     // Adding a light GUI so the user can manipulate the lights
     function makeXYZGUI(gui, vector3, name, onChangeFn) { // Internal function to make generic light GUIs
         const folder = gui.addFolder(name);
@@ -176,7 +173,28 @@ function main() {
             });
         });
     }
-    
+
+    // Adding an OBJ file of "Mitsubishi L200" by Muhammad Reyhan [CC-BY] via Poly Pizza
+    {
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('l200.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+
+            objLoader.load('l200.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 6;
+                root.scale.set(2, 2, 2);
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+
     // Adding a OBJ file of "Bambo House" by tomaszcgb on free3D.com to the scene
     { // The first house will be located in the top-left corner
         const mtlLoader = new MTLLoader();
@@ -303,28 +321,28 @@ function main() {
         });
     }
     
-    // Adding a OBJ file of "Tree Oak V10" by tomaszcgb on free3D.com to the scene
-//    { // The tree will be located on the left side of the road
-//        const mtlLoader = new MTLLoader();
-//        const objLoader = new OBJLoader();
-//        mtlLoader.load('Tree_V10_Final.mtl', (mtl) => {
-//            mtl.preload();
-//            for (const material of Object.values(mtl.materials)) {
-//                material.side = THREE.DoubleSide;
-//            }
-//            objLoader.setMaterials(mtl);
+    // Adding a OBJ file of "Tree02" by rezashams313 on free3D.com to the scene
+    { // The tree will be located on the left side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Tree.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
             
-//            objLoader.load('Tree_V10_Final.obj', (root) => {
-//                root.position.y = 0.25;
-//                root.position.x = -16;
-//                root.castShadow = true;
-//                scene.add(root);
-//            });
-//        });
-//    }
+            objLoader.load('Tree.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = -16;
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
     
     // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
-    { // The table and shares will be located on the right side of the road
+    { // The first table and chair will be located on the top-right side of the road
         const mtlLoader = new MTLLoader();
         const objLoader = new OBJLoader();
         mtlLoader.load('Table And Chairs.mtl', (mtl) => {
@@ -337,7 +355,30 @@ function main() {
             objLoader.load('Table And Chairs.obj', (root) => {
                 root.position.y = 0.25;
                 root.position.x = 16;
-                root.scale.set(0.05, 0.05, 0.05);
+                root.position.z = -8;
+                root.scale.set(0.03, 0.03, 0.03);
+                root.castShadow = true;
+                scene.add(root);
+            });
+        });
+    }
+    
+    // Adding a OBJ file of "Table And Chairs" by emrecskn on free3D.com to the scene
+    { // The second table and chair will be located on the bottom-right side of the road
+        const mtlLoader = new MTLLoader();
+        const objLoader = new OBJLoader();
+        mtlLoader.load('Table And Chairs.mtl', (mtl) => {
+            mtl.preload();
+            for (const material of Object.values(mtl.materials)) {
+                material.side = THREE.DoubleSide;
+            }
+            objLoader.setMaterials(mtl);
+            
+            objLoader.load('Table And Chairs.obj', (root) => {
+                root.position.y = 0.25;
+                root.position.x = 16;
+                root.position.z = 8;
+                root.scale.set(0.03, 0.03, 0.03);
                 root.castShadow = true;
                 scene.add(root);
             });
@@ -655,15 +696,15 @@ function main() {
 //            });
         });
 
-        // Creating the texture for the skybox/background with the "Pink Sunrise" Cubemap By Greg Zaal And Rico Cilliers Of Poly Haven
-        const loader = new THREE.TextureLoader();
-        const bgTexture = loader.load('cubemap.png', () => {
-            bgTexture.mapping = THREE.EquirectangularReflectionMapping;
-            bgTexture.colorSpace = THREE.SRGBColorSpace;
-            scene.background = bgTexture;
-        });
-        bgTexture.colorspace = THREE.SRGBColorSpace;
-
+        // Creating the texture for the skybox/background with the "Stars High Resolution 2k" By Greg Zaal Of Poly Haven
+//        const loader = new THREE.TextureLoader();
+//        const bgTexture = loader.load('Tears_Of_Steel_Bridge_2k.jpg', () => {
+//            bgTexture.mapping = THREE.EquirectangularReflectionMapping;
+//            bgTexture.colorSpace = THREE.SRGBColorSpace;
+//            scene.background = bgTexture;
+//        });
+//        bgTexture.colorspace = THREE.SRGBColorSpace;
+        
         controls.update();
         renderer.render(scene, camera);
         requestAnimationFrame(render);
