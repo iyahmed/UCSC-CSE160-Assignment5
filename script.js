@@ -696,14 +696,14 @@ function main() {
 //            });
         });
 
-        // Creating the texture for the skybox/background with the "Stars High Resolution 2k" By Greg Zaal Of Poly Haven
-//        const loader = new THREE.TextureLoader();
-//        const bgTexture = loader.load('Tears_Of_Steel_Bridge_2k.jpg', () => {
-//            bgTexture.mapping = THREE.EquirectangularReflectionMapping;
-//            bgTexture.colorSpace = THREE.SRGBColorSpace;
-//            scene.background = bgTexture;
-//        });
-//        bgTexture.colorspace = THREE.SRGBColorSpace;
+        // Creating the texture for the skybox/background with the "Tears Of Steel Bridge" By Greg Zaal Of Poly Haven
+        const loader = new THREE.TextureLoader();
+        const bgTexture = loader.load('Tears_Of_Steel_Bridge_2k.jpg', () => {
+            bgTexture.mapping = THREE.EquirectangularReflectionMapping;
+            bgTexture.colorSpace = THREE.SRGBColorSpace;
+            scene.background = bgTexture;
+        });
+        bgTexture.colorspace = THREE.SRGBColorSpace;
         
         controls.update();
         renderer.render(scene, camera);
