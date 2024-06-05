@@ -4,13 +4,6 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 import GUI from 'lil-gui';
 
-// TODO: Turn the scene to an AR scene
-// TODO: Play sounds
-// TODO: Possibly get the car animation working (optional)
-// TODO: Improve textures where needed
-// TODO: Make sure everything looks good, with no visible glitches
-// TODO: Add a Grader's Note explaining every little detail
-
 // Classes for the GUI
 class ColorGUIHelper {
     constructor(object, prop) {
